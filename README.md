@@ -12,9 +12,9 @@
 ## TODO:
 
 - First, learn about Controller Service Repository Pattern. ✅
-- Watch a quick tutorial about building architicture with TypeScript. ✅
+- Watch a quick tutorial about building architecture with TypeScript. ✅
 - Add the first setups for the project. ✅
-- Setup the mongoose schema.
-- Setup the Repository Layer.
-  = Setup the Service Layer.
+- Setup the mongoose schema. ✅
+- Setup the Repository Layer. ✅
+- Setup the Service Layer.
 - Setup the Controller Layer.
