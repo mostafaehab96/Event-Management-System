@@ -1,21 +1,30 @@
 import Event, { IEvent, EventType } from "../models/Event";
 
-class EventRepository {
-  public async getEvents(): Promise<IEvent[]> {
+export default class EventRepository {
+  public static async getEvents(): Promise<IEvent[]> {
     return Event.find();
   }
 
-  public async getEventById(id: string): Promise<IEvent | undefined> {
+  public static async getEventById(id: string): Promise<IEvent | null> {
     return Event.findById(id);
   }
-  public async getEventBytitle(title: string): Promise<IEvent | undefined> {
+  public static async getEventBytitle(title: string): Promise<IEvent | null> {
     return Event.findOne({ title });
   }
 
-  public async createEvent(event: EventType): Promise<IEvent> {
+  public static async createEvent(event: EventType): Promise<IEvent> {
     const newEvent = new Event(event);
     return newEvent.save();
   }
-}
 
-export default new EventRepository();
+  public static async updateEvent(
+    id: string,
+    data: Record<string, any>
+  ): Promise<IEvent | null> {
+    return Event.findByIdAndUpdate(id, data, { new: true });
+  }
+
+  public static async deleteEvent(id: string): Promise<IEvent | null> {
+    return Event.findByIdAndDelete(id);
+  }
+}

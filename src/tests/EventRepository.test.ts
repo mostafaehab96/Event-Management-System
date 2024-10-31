@@ -6,7 +6,6 @@ import Event, { EventType } from "../models/Event";
 
 describe("EventRepository", () => {
   let mongoServer: MongoMemoryServer;
-  const eventRepository = new EventRepository();
 
   // Start the in-memory server and connect to it
   beforeAll(async () => {
@@ -35,7 +34,7 @@ describe("EventRepository", () => {
       users: new Map([["user123", true]]),
     };
 
-    const createdEvent = await eventRepository.createEvent(eventData);
+    const createdEvent = await EventRepository.createEvent(eventData);
     expect(createdEvent).toHaveProperty("_id");
     expect(createdEvent.title).toBe("Sample Event");
     expect(createdEvent.description).toBe("A sample event description");
@@ -59,10 +58,10 @@ describe("EventRepository", () => {
       users: new Map([["user456", true]]),
     };
 
-    await eventRepository.createEvent(eventData1);
-    await eventRepository.createEvent(eventData2);
+    await EventRepository.createEvent(eventData1);
+    await EventRepository.createEvent(eventData2);
 
-    const events = await eventRepository.getEvents();
+    const events = await EventRepository.getEvents();
     expect(events.length).toBe(2);
     expect(events[0].title).toBe("Event 1");
     expect(events[1].title).toBe("Event 2");
@@ -77,10 +76,10 @@ describe("EventRepository", () => {
       users: new Map([["user789", true]]),
     };
 
-    const createdEvent = await eventRepository.createEvent(eventData);
+    const createdEvent = await EventRepository.createEvent(eventData);
     const id = createdEvent._id.toString();
 
-    const foundEvent = await eventRepository.getEventById(id);
+    const foundEvent = await EventRepository.getEventById(id);
     expect(foundEvent).not.toBeNull();
     expect(foundEvent?.title).toBe("Event by ID");
   });
@@ -94,12 +93,61 @@ describe("EventRepository", () => {
       users: new Map([["user999", true]]),
     };
 
-    await eventRepository.createEvent(eventData);
-    const foundEvent = await eventRepository.getEventBytitle(
+    await EventRepository.createEvent(eventData);
+    const foundEvent = await EventRepository.getEventBytitle(
       "Unique Event Title"
     );
 
     expect(foundEvent).not.toBeNull();
     expect(foundEvent?.title).toBe("Unique Event Title");
+  });
+
+  it("should update an existing event", async () => {
+    const eventData: EventType = {
+      title: "Event to Update",
+      description: "Original description",
+      date: new Date(),
+      createdBy: "user1000",
+      users: new Map([["user1000", true]]),
+    };
+
+    const createdEvent = await EventRepository.createEvent(eventData);
+    const updatedData = {
+      title: "Updated Event Title",
+      description: "Updated description",
+    };
+
+    const updatedEvent = await EventRepository.updateEvent(
+      createdEvent._id.toString(),
+      updatedData
+    );
+    console.log(updatedEvent.title);
+
+    expect(updatedEvent).not.toBeNull();
+    expect(updatedEvent.title).toBe("Updated Event Title");
+    expect(updatedEvent.description).toBe("Updated description");
+  });
+
+  it("should delete an existing event", async () => {
+    const eventData: EventType = {
+      title: "Event to Delete",
+      description: "This event will be deleted",
+      date: new Date(),
+      createdBy: "user1001",
+      users: new Map([["user1001", true]]),
+    };
+
+    const createdEvent = await EventRepository.createEvent(eventData);
+    const deletedEvent = await EventRepository.deleteEvent(
+      createdEvent._id.toString()
+    );
+
+    expect(deletedEvent).not.toBeNull();
+    expect(deletedEvent?.title).toBe("Event to Delete");
+
+    const foundEvent = await EventRepository.getEventById(
+      createdEvent._id.toString()
+    );
+    expect(foundEvent).toBeNull();
   });
 });
