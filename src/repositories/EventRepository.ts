@@ -18,4 +18,4 @@ class EventRepository {
   }
 }
 
-export default EventRepository;
+export default new EventRepository();
