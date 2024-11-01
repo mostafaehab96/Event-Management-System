@@ -39,7 +39,7 @@ export default class EventController {
           date,
           createdBy,
         });
-        res.status(200).json({ status: "success", data: event });
+        res.status(201).json({ status: "success", data: event });
       } catch (err) {
         res
           .status(404)

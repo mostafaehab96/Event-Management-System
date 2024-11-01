@@ -1,20 +1,201 @@
-# Event Management System
+# Event API Documentation
 
-## Description:
+This API allows you to manage events and register users for events. It includes endpoints for creating, retrieving, updating, and deleting events, as well as a user registration feature for specific events.
 
-- This is a simple task for creating an event managemnt system using NodeJs with Typescript, MongoDB, Controller Service Repository Pattern.
+## Base URL
 
-## Challenges:
+```
+http://localhost:8080/api/events
+```
 
-- I don't know what is Controller Service Repository Pattern.
-- I know the basic syntax of Typescript but I didn't use it in real project before.
+## Endpoints
 
-## TODO:
+### 1. Get All Events
 
-- First, learn about Controller Service Repository Pattern. ✅
-- Watch a quick tutorial about building architecture with TypeScript. ✅
-- Add the first setups for the project. ✅
-- Setup the mongoose schema. ✅
-- Setup the Repository Layer. ✅
-- Setup the Service Layer.
-- Setup the Controller Layer.
+- **URL**: `/`
+- **Method**: `GET`
+- **Description**: Retrieves a list of all events.
+- **Response**:
+  - **200 OK**: Successfully retrieves all events.
+    ```json
+    {
+      "status": "success",
+      "data": [
+        {
+          "id": "string",
+          "title": "string",
+          "description": "string",
+          "date": "ISODateString",
+          "createdBy": "string",
+          "users": { "userId": true }
+        },
+        ...
+      ]
+    }
+    ```
+
+### 2. Create Event
+
+- **URL**: `/`
+- **Method**: `POST`
+- **Description**: Creates a new event.
+- **Request Body**:
+  ```json
+  {
+    "title": "string",
+    "description": "string",
+    "date": "ISODateString",
+    "createdBy": "string"
+  }
+  ```
+- **Response**:
+  - **201 Created**: Successfully creates the event.
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "date": "ISODateString",
+        "createdBy": "string",
+        "users": {}
+      }
+    }
+    ```
+  - **400 Bad Request**: Missing or invalid request data.
+    ```json
+    {
+      "status": "error",
+      "message": "Validation error: missing required fields."
+    }
+    ```
+
+### 3. Get Event by ID
+
+- **URL**: `/:id`
+- **Method**: `GET`
+- **Description**: Retrieves a specific event by its ID.
+- **Response**:
+  - **200 OK**: Successfully retrieves the event.
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "date": "ISODateString",
+        "createdBy": "string",
+        "users": {}
+      }
+    }
+    ```
+  - **404 Not Found**: Event with the given ID does not exist.
+    ```json
+    {
+      "status": "error",
+      "message": "Event not found."
+    }
+    ```
+
+### 4. Update Event by ID
+
+- **URL**: `/:id`
+- **Method**: `PUT`
+- **Description**: Updates an existing event by its ID.
+- **Request Body**:
+  ```json
+  {
+    "title": "string",
+    "description": "string",
+    "date": "ISODateString"
+  }
+  ```
+- **Response**:
+  - **200 OK**: Successfully updates the event.
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "date": "ISODateString",
+        "createdBy": "string",
+        "users": {}
+      }
+    }
+    ```
+  - **400 Bad Request**: Invalid request data.
+  - **404 Not Found**: Event with the given ID does not exist.
+    ```json
+    {
+      "status": "error",
+      "message": "Event not found."
+    }
+    ```
+
+### 5. Delete Event by ID
+
+- **URL**: `/:id`
+- **Method**: `DELETE`
+- **Description**: Deletes an event by its ID.
+- **Response**:
+  - **200 OK**: Successfully deletes the event.
+    ```json
+    {
+      "status": "success",
+      "message": "Event deleted successfully."
+    }
+    ```
+  - **404 Not Found**: Event with the given ID does not exist.
+    ```json
+    {
+      "status": "error",
+      "message": "Event not found."
+    }
+    ```
+
+### 6. Register User to Event
+
+- **URL**: `/:id/register`
+- **Method**: `PUT`
+- **Description**: Registers a user to an event.
+- **Request Body**:
+  ```json
+  {
+    "userId": "string"
+  }
+  ```
+- **Response**:
+  - **200 OK**: Successfully registers the user to the event.
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "date": "ISODateString",
+        "createdBy": "string",
+        "users": { "userId": true }
+      }
+    }
+    ```
+  - **400 Bad Request**: User is already registered or missing data.
+    ```json
+    {
+      "status": "error",
+      "message": "User is already registered for this event."
+    }
+    ```
+  - **404 Not Found**: Event with the given ID does not exist.
+    ```json
+    {
+      "status": "error",
+      "message": "Event not found."
+    }
+    ```
+
+---
