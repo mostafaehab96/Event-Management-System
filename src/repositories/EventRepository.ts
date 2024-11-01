@@ -1,3 +1,4 @@
+import { IPVersion } from "net";
 import Event, { IEvent, EventType } from "../models/Event";
 
 export default class EventRepository {
@@ -10,6 +11,18 @@ export default class EventRepository {
   }
   public static async getEventBytitle(title: string): Promise<IEvent | null> {
     return Event.findOne({ title });
+  }
+
+  public static async getUserEventsByDate(
+    createdBy: string,
+    date: Date
+  ): Promise<IEvent[] | null> {
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
+
+    return Event.find({ createdBy, date: { $gte: start, $lte: end } });
   }
 
   public static async createEvent(event: EventType): Promise<IEvent> {

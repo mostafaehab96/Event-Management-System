@@ -150,4 +150,48 @@ describe("EventRepository", () => {
     );
     expect(foundEvent).toBeNull();
   });
+
+  it("should retrieve events created by a user on a specific date", async () => {
+    const createdBy = "user123";
+    const targetDate = new Date("2024-11-01");
+
+    // Create some events with different dates and users
+    await Event.create({
+      title: "Event 1",
+      description: "Event on the target date",
+      date: targetDate,
+      createdBy,
+      users: new Map([[createdBy, true]]),
+    });
+    await Event.create({
+      title: "Event 2",
+      description: "Another event on the target date",
+      date: targetDate,
+      createdBy,
+      users: new Map([[createdBy, true]]),
+    });
+    await Event.create({
+      title: "Event 3",
+      description: "Event on a different date",
+      date: new Date("2024-10-31"),
+      createdBy,
+      users: new Map([[createdBy, true]]),
+    });
+    await Event.create({
+      title: "Event 4",
+      description: "Event by a different user",
+      date: targetDate,
+      createdBy: "user456",
+      users: new Map([["user456", true]]),
+    });
+
+    const events = await EventRepository.getUserEventsByDate(
+      createdBy,
+      targetDate
+    );
+
+    expect(events).toHaveLength(2); // Expect only the 2 events matching date and user
+    expect(events[0].title).toBe("Event 1");
+    expect(events[1].title).toBe("Event 2");
+  });
 });
