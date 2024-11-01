@@ -25,6 +25,65 @@ describe("EventService", () => {
     await Event.deleteMany({});
   });
 
+  it("should retrieve all events", async () => {
+    const eventData1: EventType = {
+      title: "Event 1",
+      description: "First event description",
+      date: new Date(),
+      createdBy: "user123",
+      users: new Map([["user123", true]]),
+    };
+
+    const eventData2: EventType = {
+      title: "Event 2",
+      description: "Second event description",
+      date: new Date(),
+      createdBy: "user456",
+      users: new Map([["user456", true]]),
+    };
+
+    await EventRepository.createEvent(eventData1);
+    await EventRepository.createEvent(eventData2);
+
+    const events = await EventService.getEvents();
+    expect(events.length).toBe(2);
+    expect(events[0].title).toBe("Event 1");
+    expect(events[1].title).toBe("Event 2");
+  });
+
+  it("should retrieve an event by ID", async () => {
+    const eventData: EventType = {
+      title: "Event by ID",
+      description: "Find this event by ID",
+      date: new Date(),
+      createdBy: "user789",
+      users: new Map([["user789", true]]),
+    };
+
+    const createdEvent = await EventRepository.createEvent(eventData);
+    const id = createdEvent._id.toString();
+
+    const foundEvent = await EventService.getEventById(id);
+    expect(foundEvent).not.toBeNull();
+    expect(foundEvent?.title).toBe("Event by ID");
+  });
+
+  it("should retrieve an event by title", async () => {
+    const eventData: EventType = {
+      title: "Unique Event Title",
+      description: "Event with a unique title",
+      date: new Date(),
+      createdBy: "user999",
+      users: new Map([["user999", true]]),
+    };
+
+    await EventRepository.createEvent(eventData);
+    const foundEvent = await EventService.getEventBytitle("Unique Event Title");
+
+    expect(foundEvent).not.toBeNull();
+    expect(foundEvent?.title).toBe("Unique Event Title");
+  });
+
   it("should register a user to an event successfully", async () => {
     const eventData: EventData = {
       title: "Sample Event",
@@ -82,5 +141,28 @@ describe("EventService", () => {
     await expect(
       EventService.registerUserToEvent(createdEvent._id.toString(), "newUser")
     ).rejects.toBe("The event already passed!");
+  });
+
+  it("should delete an existing event", async () => {
+    const eventData: EventType = {
+      title: "Event to Delete",
+      description: "This event will be deleted",
+      date: new Date(),
+      createdBy: "user1001",
+      users: new Map([["user1001", true]]),
+    };
+
+    const createdEvent = await EventRepository.createEvent(eventData);
+    const deletedEvent = await EventService.deleteEvent(
+      createdEvent._id.toString()
+    );
+
+    expect(deletedEvent).not.toBeNull();
+    expect(deletedEvent?.title).toBe("Event to Delete");
+
+    const foundEvent = await EventRepository.getEventById(
+      createdEvent._id.toString()
+    );
+    expect(foundEvent).toBeNull();
   });
 });

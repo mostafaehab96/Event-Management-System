@@ -1,4 +1,4 @@
-import { EventType } from "../models/Event";
+import { EventType, IEvent } from "../models/Event";
 import EventRepository from "../repositories/EventRepository";
 import validateDate from "../utils/date-validator";
 
@@ -10,6 +10,23 @@ export type EventData = {
 };
 
 export default class EventService {
+  public static async getEvents(): Promise<IEvent[] | null> {
+    return EventRepository.getEvents();
+  }
+
+  public static async getEventById(id: string): Promise<IEvent | null> {
+    try {
+      return EventRepository.getEventById(id);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+
+  public static async getEventBytitle(title: string): Promise<IEvent | null> {
+    return EventRepository.getEventBytitle(title);
+  }
+
   public static async createEvent(event: EventData) {
     const date = validateDate(event.date);
     if (!date) {
@@ -64,5 +81,14 @@ export default class EventService {
     const users = event.users;
     users.set(username, true);
     return EventRepository.updateEvent(event_id, { users });
+  }
+
+  public static async deleteEvent(id: string): Promise<IEvent | null> {
+    try {
+      return EventRepository.deleteEvent(id);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 }
