@@ -9,7 +9,7 @@ export type EventData = {
   createdBy: string;
 };
 
-export class EventService {
+export default class EventService {
   public static async createEvent(event: EventData) {
     const date = validateDate(event.date);
     if (!date) {
@@ -66,5 +66,3 @@ export class EventService {
     return EventRepository.updateEvent(event_id, { users });
   }
 }
-
-export default EventService;
