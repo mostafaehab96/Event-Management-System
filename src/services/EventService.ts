@@ -1,8 +1,8 @@
-import Event, { EventType } from "../models/Event";
+import { EventType } from "../models/Event";
 import EventRepository from "../repositories/EventRepository";
 import validateDate from "../utils/date-validator";
 
-type EventData = {
+export type EventData = {
   title: string;
   description: string;
   date: string;
@@ -47,7 +47,12 @@ export class EventService {
   }
 
   public static async registerUserToEvent(event_id: string, username: string) {
-    const event = await EventRepository.getEventById(event_id);
+    let event;
+    try {
+      event = await EventRepository.getEventById(event_id);
+    } catch (err) {
+      return null;
+    }
     if (!event) return null;
 
     if (event.users.get(username))
@@ -56,7 +61,10 @@ export class EventService {
     if (!validateDate(event.date.toString()))
       return Promise.reject("The event already passed!");
 
-    event.users.set(username, true);
-    return Promise.resolve("User registered successfully!");
+    const users = event.users;
+    users.set(username, true);
+    return EventRepository.updateEvent(event_id, { users });
   }
 }
+
+export default EventService;

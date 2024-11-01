@@ -121,7 +121,6 @@ describe("EventRepository", () => {
       createdEvent._id.toString(),
       updatedData
     );
-    console.log(updatedEvent.title);
 
     expect(updatedEvent).not.toBeNull();
     expect(updatedEvent.title).toBe("Updated Event Title");
