@@ -102,12 +102,9 @@ describe("EventService", () => {
   });
 
   it("should not register a user to a non-existent event", async () => {
-    const response = await EventService.registerUserToEvent(
-      "nonExistentEventId",
-      "newUser"
-    );
-
-    expect(response).toBeNull();
+    await expect(
+      EventService.registerUserToEvent("nonExistentEventId", "newUser")
+    ).rejects.toBe("Event doesn't exist!");
   });
 
   it("should not register a user who is already registered", async () => {

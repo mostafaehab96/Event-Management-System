@@ -3,14 +3,14 @@ import Event, { IEvent, EventType } from "../models/Event";
 
 export default class EventRepository {
   public static async getEvents(): Promise<IEvent[]> {
-    return Event.find();
+    return Event.find({}, { __v: false });
   }
 
   public static async getEventById(id: string): Promise<IEvent | null> {
-    return Event.findById(id);
+    return Event.findById(id, { __v: false });
   }
   public static async getEventBytitle(title: string): Promise<IEvent | null> {
-    return Event.findOne({ title });
+    return Event.findOne({ title }, { __v: false });
   }
 
   public static async getUserEventsByDate(
@@ -34,7 +34,7 @@ export default class EventRepository {
     id: string,
     data: Record<string, any>
   ): Promise<IEvent | null> {
-    return Event.findByIdAndUpdate(id, data, { new: true });
+    return Event.findByIdAndUpdate(id, data, { new: true, __v: false });
   }
 
   public static async deleteEvent(id: string): Promise<IEvent | null> {
